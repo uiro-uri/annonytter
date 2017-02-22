@@ -1,0 +1,15 @@
+= form_for @tweet do |f|
+  = f.label :text, "テキスト"
+  = f.text_area :text, maxlength: 140
+  = f.label :image, "画像URL"
+  = f.text_field :image
+  = f.submit '保存'
+%hr/
+%button{:type => "submit"}
+  = link_to 'ツイート', post_tweets_path
+
+%ul
+!= list_of Tweet.all do |tw,i|
+  = tw.id
+  = tw.text
+  = tw.image
