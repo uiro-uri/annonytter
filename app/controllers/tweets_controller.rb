@@ -22,14 +22,21 @@ class TweetsController < ApplicationController
   def post
     tweet = Tweet.last
     status = tweet.text
-    media = open(tweet.image)
-    media.rewind
-    @client.update_with_media(status, media)
+    option = {}
+    media = valid_url?(tweet.image)
+    option.update({media_ids: @client.upload(media)}) if media
+    @client.update(status, option)
     redirect_to :root
   end
 
   private
   def create_params
     params.require(:tweet).permit(:text, :image)
+  end
+  
+  def valid_url?(url)
+    open(url)
+  rescue
+    false
   end
 end
