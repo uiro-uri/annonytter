@@ -20,7 +20,12 @@ class TweetsController < ApplicationController
   end
   
   def post
-    tweet = Tweet.last
+    if params[:id]
+      tweet = Tweet.find(params[:id])
+    else
+      tweet = Tweet.last
+    end
+    
     status = tweet.text
     option = {}
     media = valid_url?(tweet.image)

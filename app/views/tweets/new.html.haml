@@ -5,11 +5,14 @@
   = f.text_field :image
   = f.submit '保存'
 %hr/
-%button{:type => "submit"}
-  = link_to 'ツイート', post_tweets_path
+
+= form_tag post_tweets_path, method: 'get' do
+  = label_tag :id, "ID"
+  = text_field_tag :id
+  = submit_tag 'ツイート'
 
 %ul
-!= list_of Tweet.all do |tw,i|
+!= list_of Tweet.all.reverse do |tw,i|
   = tw.id
   = tw.text
   = tw.image
