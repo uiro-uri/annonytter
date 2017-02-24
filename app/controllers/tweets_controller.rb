@@ -20,10 +20,10 @@ class TweetsController < ApplicationController
   end
   
   def post
-    if params[:id]
-      tweet = Tweet.find(params[:id])
-    else
+    if params[:id].empty?
       tweet = Tweet.last
+    else
+      tweet = Tweet.find(params[:id])
     end
     
     status = tweet.text
