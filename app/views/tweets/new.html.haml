@@ -1,3 +1,6 @@
+= flash[:success]
+= flash[:error]
+
 = form_for @tweet do |f|
   = f.label :text, "テキスト"
   = f.text_area :text, maxlength: 140
@@ -8,9 +11,9 @@
 
 = form_tag post_tweets_path, method: 'get' do
   = label_tag :id, "ID"
-  = text_field_tag :id
+  = collection_select :tweet, :id, Tweet.all, :id, :id
   = submit_tag 'ツイート'
-
+  
 %ul
 != list_of Tweet.all.reverse do |tw,i|
   = tw.id

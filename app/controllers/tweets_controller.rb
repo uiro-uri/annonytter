@@ -20,10 +20,10 @@ class TweetsController < ApplicationController
   end
   
   def post
-    if params[:id].empty?
+    if (id = params[:tweet][:id]).empty?
       tweet = Tweet.last
     else
-      tweet = Tweet.find(params[:id])
+      tweet = Tweet.find(id)
     end
     
     status = tweet.text
@@ -31,7 +31,9 @@ class TweetsController < ApplicationController
     media = valid_url?(tweet.image)
     option.update({media_ids: @client.upload(media)}) if media
     @client.update(status, option)
-    redirect_to :root
+    redirect_to :root, flash: {success: "post #{tweet.attributes} success"}
+  rescue
+    redirect_to :root, flash: {error: 'ERROR!!'}
   end
 
   private
