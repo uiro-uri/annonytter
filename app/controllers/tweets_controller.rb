@@ -11,6 +11,7 @@ class TweetsController < ApplicationController
   end
   
   def new
+    @tweets = Tweet.all
     @tweet = Tweet.new
   end
 
@@ -31,7 +32,7 @@ class TweetsController < ApplicationController
     media = valid_url?(tweet.image)
     option.update({media_ids: @client.upload(media)}) if media
     @client.update(status, option)
-    redirect_to :root, flash: {success: "post #{tweet.attributes} success"}
+    redirect_to :root, flash: {success: "success to post #{tweet.attributes}"}
   rescue
     redirect_to :root, flash: {error: 'ERROR!!'}
   end

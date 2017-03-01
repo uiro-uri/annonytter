@@ -3,7 +3,7 @@
 
 = form_for @tweet do |f|
   = f.label :text, "テキスト"
-  = f.text_area :text, maxlength: 140
+  = f.text_area :text
   = f.label :image, "画像URL"
   = f.text_field :image
   = f.submit '保存'
@@ -11,11 +11,22 @@
 
 = form_tag post_tweets_path, method: 'get' do
   = label_tag :id, "ID"
-  = collection_select :tweet, :id, Tweet.all, :id, :id
+  = collection_select :tweet, :id, Tweet.all.reverse, :id, :id
   = submit_tag 'ツイート'
-  
-%ul
-!= list_of Tweet.all.reverse do |tw,i|
-  = tw.id
-  = tw.text
-  = tw.image
+
+%table{class:"tweets_table"}
+  %tr
+    %th id
+    %th text
+    %th image
+    %th accept_value
+    %th reject_value
+    %th review_status
+  -@tweets.reverse.each do |tw|
+    %tr
+      %td= tw.id
+      %td= tw.text
+      %td= tw.image
+      %td= tw.accept_value
+      %td= tw.reject_value
+      %td= tw.review_status
