@@ -36,6 +36,21 @@ class TweetsController < ApplicationController
   rescue
     redirect_to :root, flash: {error: 'ERROR!!'}
   end
+  
+  def vote
+    votes=params[:vote]
+    votes.each do |id,value|
+      tweet=Tweet.find(id)
+      case value
+      when "accept"
+        tweet.accept_value+=1
+      when "reject"
+        tweet.reject_value+=1
+      end
+      tweet.save
+    end
+    redirect_to :root, flash: {success: "Thank you for revewing!"}
+  end
 
   private
   def create_params
