@@ -26,26 +26,32 @@ class TweetsController < ApplicationController
     else
       tweet = Tweet.find(id)
     end
-    
-    status = tweet.text
-    option = {}
-    media = valid_url?(tweet.image)
-    option.update({media_ids: @client.upload(media)}) if media
-    @client.update(status, option)
-    redirect_to :root, flash: {success: "success to post #{tweet.attributes}"}
+    if tweet.accepted?
+      status = tweet.text
+      option = {}
+      media = valid_url?(tweet.image)
+      option.update({media_ids: @client.upload(media)}) if media
+      @client.update(status, option)
+      tweet.destroy
+      redirect_to :root, flash: {success: "success to post #{tweet.attributes}"}
+    else
+      redirect_to :root, flash: {error: 'error: This tweet has not accepted'}
+    end
   rescue
     redirect_to :root, flash: {error: 'ERROR!!'}
   end
   
   def vote
-    votes=params[:vote]
-    votes.each do |id,value|
+    votes=params[:vote]||{}
+    votes.each do |id,v|
       tweet=Tweet.find(id)
-      case value
+      case v
       when "accept"
         tweet.accept_value+=1
+        tweet.review_status=:accepted if tweet.accept_value >= Settings[:accept_threshold]
       when "reject"
         tweet.reject_value+=1
+        tweet.review_status=:rejected if tweet.reject_value >= Settings[:reject_threshold]
       end
       tweet.save
     end

@@ -11,10 +11,11 @@
 
 = form_tag post_tweets_path, method: 'get' do
   = label_tag :id, "ID"
-  = collection_select :tweet, :id, @tweets.all.reverse, :id, :id
+  = collection_select :tweet, :id, @tweets.reverse, :id, :id
   = submit_tag 'ツイート'
 
 = form_tag vote_tweets_path, method: 'get' do
+  = submit_tag "review submit"
   %table.tweets_table
     %tr
       %th id
@@ -23,7 +24,8 @@
       %th accept_value
       %th reject_value
       %th review_status
-      %th= submit_tag "submit"
+      %th accept
+      %th reject
     -@tweets.reverse.each do |tw|
       %tr
         %td= tw.id
