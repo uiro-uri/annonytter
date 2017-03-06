@@ -57,3 +57,5 @@ gem 'twitter'
 gem 'config'
 
 gem 'haml'
+
+gem 'activerecord-session_store'

@@ -1,19 +1,29 @@
+査読付き匿名ツイッター
+%h1 Annonytter
+
 = flash[:success]
 = flash[:error]
-
-= form_for @tweet do |f|
-  = f.label :text, "テキスト"
-  = f.text_area :text
-  = f.label :image, "画像URL"
-  = f.text_field :image
-  = f.submit '保存'
 %hr/
 
-= form_tag post_tweets_path, method: 'get' do
-  = label_tag :id, "ID"
-  = collection_select :tweet, :id, @tweets.reverse, :id, :id
-  = submit_tag 'ツイート'
+このフォームから
+= link_to "@AnnonytterApp", Settings[:twitter_url]
+にツイートできます。
 
+
+= form_for @tweet do |f|
+  = f.label :text, "text"
+  = f.text_area :text
+  = f.label :image, "image URL"
+  = f.text_field :image
+  = f.submit 'Save'
+
+残り投稿回数
+= session[:post_remains]
+
+%hr/
+
+
+他の投稿者のツイートを4件レビューすると投稿回数が回復します。良識に従って判断しましょう。
 = form_tag vote_tweets_path, method: 'get' do
   = submit_tag "review submit"
   %table.tweets_table
@@ -21,18 +31,16 @@
       %th id
       %th text
       %th image
-      %th accept_value
-      %th reject_value
-      %th review_status
       %th accept
+      %th
       %th reject
+      %th
     -@tweets.reverse.each do |tw|
       %tr
         %td= tw.id
         %td= tw.text
-        %td= tw.image
-        %td= tw.accept_value
-        %td= tw.reject_value
-        %td= tw.review_status
+        %td= link_to "■",tw.image unless tw.image.empty?
         %td= radio_button "vote", tw.id, "accept"
+        %td= tw.accept_value
         %td= radio_button "vote", tw.id, "reject"
+        %td= tw.reject_value

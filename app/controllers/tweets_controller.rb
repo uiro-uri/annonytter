@@ -11,34 +11,19 @@ class TweetsController < ApplicationController
   end
   
   def new
-    @tweets = Tweet.all
+    @tweets = Tweet.where({review_status: :draft})
     @tweet = Tweet.new
+    session[:post_remains] ||= 0
   end
 
   def create
-    Tweet.create(create_params)
-    redirect_to :root
-  end
-  
-  def post
-    if (id = params[:tweet][:id]).empty?
-      tweet = Tweet.last
+    if session[:post_remains] < 1
+      redirect_to :root, flash: {error: "残り投稿回数がありません"}
     else
-      tweet = Tweet.find(id)
+      Tweet.create(create_params)
+      session[:post_remains] += -1
+      redirect_to :root
     end
-    if tweet.accepted?
-      status = tweet.text
-      option = {}
-      media = valid_url?(tweet.image)
-      option.update({media_ids: @client.upload(media)}) if media
-      @client.update(status, option)
-      tweet.destroy
-      redirect_to :root, flash: {success: "success to post #{tweet.attributes}"}
-    else
-      redirect_to :root, flash: {error: 'error: This tweet has not accepted'}
-    end
-  rescue
-    redirect_to :root, flash: {error: 'ERROR!!'}
   end
   
   def vote
@@ -48,14 +33,29 @@ class TweetsController < ApplicationController
       case v
       when "accept"
         tweet.accept_value+=1
-        tweet.review_status=:accepted if tweet.accept_value >= Settings[:accept_threshold]
+        tweet.save
+        if tweet.accept_value >= Settings[:accept_threshold]
+          post tweet
+        end
       when "reject"
         tweet.reject_value+=1
         tweet.review_status=:rejected if tweet.reject_value >= Settings[:reject_threshold]
+        tweet.save
       end
-      tweet.save
     end
-    redirect_to :root, flash: {success: "Thank you for revewing!"}
+    session[:post_remains] += params[:vote].length/4
+    redirect_to :root, flash: {success: "レビュー完了"}
+  end
+
+  def post tweet
+    status = tweet.text
+    option = {}
+    media = valid_url?(tweet.image)
+    option.update({media_ids: @client.upload(media)}) if media
+    @client.update(status, option)
+    tweet.destroy
+  rescue
+    redirect_to :root, flash: {error: 'ERROR!!'}
   end
 
   private
