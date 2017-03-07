@@ -1,3 +1,4 @@
 accept_threshold: 3
 reject_threshold: 3
+post_review_ratio: 4
 twitter_url: "https://twitter.com/AnnonytterApp"

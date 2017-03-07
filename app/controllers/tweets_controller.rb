@@ -43,7 +43,7 @@ class TweetsController < ApplicationController
         tweet.save
       end
     end
-    session[:post_remains] += params[:vote].length/4
+    session[:post_remains] += params[:vote].length/Settings[:post_review_ratio]
     redirect_to :root, flash: {success: "レビュー完了"}
   end
 
