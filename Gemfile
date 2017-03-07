@@ -59,3 +59,7 @@ gem 'config'
 gem 'haml'
 
 gem 'activerecord-session_store'
+
+gem 'twitter-bootstrap-rails'
+gem 'less-rails'
+gem 'therubyracer'

@@ -10,3 +10,11 @@ td {
   max-width: 100px;
   overflow: hidden;
 }
+
+td.accept_cell {
+  background: bg-success;
+}
+
+td.reject_cell {
+  background: bg-inverse;
+}

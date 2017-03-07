@@ -23,24 +23,26 @@
 %hr/
 
 
-他の投稿者のツイートを4件レビューすると投稿回数が回復します。良識に従って判断しましょう。
+他の投稿者のツイートを
+= Settings[:post_review_ratio]
+件レビューすると投稿回数が回復します。良識に従って判定しましょう。
 = form_tag vote_tweets_path, method: 'get' do
   = submit_tag "review submit"
   %table.tweets_table
     %tr
       %th id
-      %th text
-      %th image
-      %th accept
-      %th
-      %th reject
-      %th
+      %th 本文
+      %th 画像
+      %th.bg-success 承認
+      %th.bg-success
+      %th.bg-danger 却下
+      %th.bg-danger
     -@tweets.reverse.each do |tw|
       %tr
         %td= tw.id
         %td= tw.text
         %td= link_to "■",tw.image unless tw.image.empty?
-        %td= radio_button "vote", tw.id, "accept"
-        %td= tw.accept_value
-        %td= radio_button "vote", tw.id, "reject"
-        %td= tw.reject_value
+        %td.bg-success= radio_button "vote", tw.id, "accept"
+        %td.bg-success= tw.accept_value
+        %td.bg-danger= radio_button "vote", tw.id, "reject"
+        %td.bg-danger= tw.reject_value
