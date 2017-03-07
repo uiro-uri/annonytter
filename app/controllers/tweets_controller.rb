@@ -11,18 +11,24 @@ class TweetsController < ApplicationController
   end
   
   def new
-    @tweets = Tweet.where({review_status: :draft})
-    @tweet = Tweet.new
     session[:post_remains] ||= 0
+    session[:posted_tweet_ids]||=[]
+    session[:reviewed_tweet_ids]||=[]
+    @drafts = Tweet.where(review_status: :draft).reject do |tw|
+      (session[:posted_tweet_ids] + session[:reviewed_tweet_ids]).include?(tw.id)
+    end
+    @rejected = Tweet.where(review_status: :rejected)
+    @tweet = Tweet.new
   end
 
   def create
     if session[:post_remains] < 1
       redirect_to :root, flash: {error: "残り投稿回数がありません"}
     else
-      Tweet.create(create_params)
-      session[:post_remains] += -1
-      redirect_to :root
+      tweet=Tweet.create(create_params)
+      session[:posted_tweet_ids] << tweet.id
+      session[:post_remains] -= 1
+      redirect_to :root, flash:{success: "投稿：#{tweet.text}"}
     end
   end
   
@@ -42,8 +48,9 @@ class TweetsController < ApplicationController
         tweet.review_status=:rejected if tweet.reject_value >= Settings[:reject_threshold]
         tweet.save
       end
+      session[:reviewed_tweet_ids] << id.to_i
     end
-    session[:post_remains] += params[:vote].length/Settings[:post_review_ratio]
+    session[:post_remains] += votes.length/Settings[:post_review_ratio]
     redirect_to :root, flash: {success: "レビュー完了"}
   end
 
@@ -55,7 +62,7 @@ class TweetsController < ApplicationController
     @client.update(status, option)
     tweet.destroy
   rescue
-    redirect_to :root, flash: {error: 'ERROR!!'}
+    false
   end
 
   private
