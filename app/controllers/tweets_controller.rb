@@ -11,29 +11,58 @@ class TweetsController < ApplicationController
   end
   
   def new
+    session[:post_remains] ||= 0
+    session[:posted_tweet_ids]||=[]
+    session[:reviewed_tweet_ids]||=[]
+    @drafts = Tweet.where(review_status: :draft).reject do |tw|
+      (session[:posted_tweet_ids] + session[:reviewed_tweet_ids]).include?(tw.id)
+    end
+    @rejected = Tweet.where(review_status: :rejected)
     @tweet = Tweet.new
   end
 
   def create
-    Tweet.create(create_params)
-    redirect_to :root
+    if session[:post_remains] < 1
+      redirect_to :root, flash: {error: "残り投稿回数がありません"}
+    else
+      tweet=Tweet.create(create_params)
+      session[:posted_tweet_ids] << tweet.id
+      session[:post_remains] -= 1
+      redirect_to :root, flash:{success: "投稿：#{tweet.text}"}
+    end
   end
   
-  def post
-    if (id = params[:tweet][:id]).empty?
-      tweet = Tweet.last
-    else
-      tweet = Tweet.find(id)
+  def vote
+    votes=params[:vote]||{}
+    votes.each do |id,v|
+      tweet=Tweet.find(id)
+      case v
+      when "accept"
+        tweet.accept_value+=1
+        tweet.save
+        if tweet.accept_value >= Settings[:accept_threshold]
+          post tweet
+        end
+      when "reject"
+        tweet.reject_value+=1
+        tweet.review_status=:rejected if tweet.reject_value >= Settings[:reject_threshold]
+        tweet.save
+      end
+      session[:reviewed_tweet_ids] << id.to_i
     end
-    
+    session[:post_remains] += votes.length/Settings[:post_review_ratio]
+    redirect_to :root, flash: {success: "レビュー完了"}
+  end
+
+  def post tweet
     status = tweet.text
     option = {}
     media = valid_url?(tweet.image)
     option.update({media_ids: @client.upload(media)}) if media
     @client.update(status, option)
-    redirect_to :root, flash: {success: "post #{tweet.attributes} success"}
+    tweet.destroy
   rescue
-    redirect_to :root, flash: {error: 'ERROR!!'}
+    false
   end
 
   private

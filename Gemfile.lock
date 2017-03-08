@@ -33,6 +33,12 @@ GEM
       activemodel (= 5.0.1)
       activesupport (= 5.0.1)
       arel (~> 7.0)
+    activerecord-session_store (1.0.0)
+      actionpack (>= 4.0, < 5.1)
+      activerecord (>= 4.0, < 5.1)
+      multi_json (~> 1.11, >= 1.11.2)
+      rack (>= 1.5.2, < 3)
+      railties (>= 4.0, < 5.1)
     activesupport (5.0.1)
       concurrent-ruby (~> 1.0, >= 1.0.2)
       i18n (~> 0.7)
@@ -51,6 +57,7 @@ GEM
       coffee-script-source
       execjs
     coffee-script-source (1.12.2)
+    commonjs (0.2.7)
     concurrent-ruby (1.0.4)
     config (1.4.0)
       activesupport (>= 3.0)
@@ -86,6 +93,14 @@ GEM
       rails-dom-testing (>= 1, < 3)
       railties (>= 4.2.0)
       thor (>= 0.14, < 2.0)
+    less (2.6.0)
+      commonjs (~> 0.2.7)
+    less-rails (2.8.0)
+      actionpack (>= 4.0)
+      less (~> 2.6.0)
+      sprockets (> 2, < 4)
+      tilt
+    libv8 (3.16.14.17-x86_64-linux)
     listen (3.0.8)
       rb-fsevent (~> 0.9, >= 0.9.4)
       rb-inotify (~> 0.9, >= 0.9.7)
@@ -140,6 +155,7 @@ GEM
     rb-fsevent (0.9.8)
     rb-inotify (0.9.8)
       ffi (>= 0.5.0)
+    ref (2.0.0)
     sass (3.4.23)
     sass-rails (5.0.6)
       railties (>= 4.0.0, < 6)
@@ -160,6 +176,9 @@ GEM
       actionpack (>= 4.0)
       activesupport (>= 4.0)
       sprockets (>= 3.0.0)
+    therubyracer (0.12.3)
+      libv8 (~> 3.16.14.15)
+      ref
     thor (0.19.4)
     thread_safe (0.3.5)
     tilt (2.0.6)
@@ -176,6 +195,11 @@ GEM
       memoizable (~> 0.4.2)
       naught (~> 1.1)
       simple_oauth (~> 0.3.1)
+    twitter-bootstrap-rails (4.0.0)
+      actionpack (~> 5.0, >= 5.0.1)
+      execjs (~> 2.7)
+      less-rails (~> 2.8, >= 2.8.0)
+      railties (~> 5.0, >= 5.0.1)
     tzinfo (1.2.2)
       thread_safe (~> 0.1)
     uglifier (3.0.4)
@@ -196,12 +220,14 @@ PLATFORMS
   ruby
 
 DEPENDENCIES
+  activerecord-session_store
   byebug
   coffee-rails (~> 4.2)
   config
   haml
   jbuilder (~> 2.5)
   jquery-rails
+  less-rails
   listen (~> 3.0.5)
   mysql2 (>= 0.3.18, < 0.5)
   puma (~> 3.0)
@@ -209,8 +235,10 @@ DEPENDENCIES
   sass-rails (~> 5.0)
   spring
   spring-watcher-listen (~> 2.0.0)
+  therubyracer
   turbolinks (~> 5)
   twitter
+  twitter-bootstrap-rails
   tzinfo-data
   uglifier (>= 1.3.0)
   web-console (>= 3.3.0)
