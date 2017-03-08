@@ -1,61 +1,61 @@
+.bg-success= flash[:success]
+.bg-danger= flash[:error]
 .container
-  %h1 Annonytter
-  査読付き匿名ツイッター
-  .bg-success= flash[:success]
-  .bg-danger= flash[:error]
-  %hr/
+  %h1
+    Anonytter
+    %small 査読付き匿名ツイッター
+  %hr
   
   このフォームから
-  = link_to "@AnnonytterApp", Settings[:twitter_url]
+  = link_to "@AnonytterApp", Settings[:twitter_url]
   に投稿できます。
   
-  .form-group
-    = form_for @tweet do |f|
+  = form_for @tweet do |f|
+    .form-group
       = f.label :text, "本文"
-      = f.text_area :text
+      = f.text_area :text, class:"form-control"
+    .form-group
       = f.label :image, "画像URL"
-      = f.text_field :image
-      = f.submit '投稿'
+      = f.text_field :image, class:"form-control"
+    = f.submit '投稿', class:"btn"
   
   残り投稿回数
   = session[:post_remains]
   
-  %hr/
+  %hr
   
-  
-  他の投稿者のツイートを
-  = Settings[:post_review_ratio]
-  件レビューすると投稿回数が回復します。良識に従って判定しましょう。
+  %p
+    他の投稿者のツイートを
+    = Settings[:post_review_ratio]
+    件レビューすると投稿回数が回復します。
+  %p
+    良識に従って判定しましょう。
   = form_tag vote_tweets_path, method: 'get' do
-    = submit_tag "レビュー送信", class:"btn-primary"
+    = submit_tag "レビュー送信", class:"btn"
     %table.table
       %tr
-        %th id
-        %th 本文
-        %th 画像
         %th.bg-success 承認
         %th.bg-success
         %th.bg-danger 却下
         %th.bg-danger
+        %th 本文
+        %th 画像
       -@drafts.reverse.each do |tw|
         %tr
-          %td= tw.id
-          %td= tw.text
-          %td= link_to "■",tw.image unless tw.image.empty?
           %td.bg-success= radio_button "vote", tw.id, "accept"
           %td.bg-success= tw.accept_value
           %td.bg-danger= radio_button "vote", tw.id, "reject"
           %td.bg-danger= tw.reject_value
+          %td= tw.text
+          %td= link_to "■",tw.image unless tw.image.empty?
 
   %h2 落選ツイート
   %table.table
     %tr
-      %th id
       %th 本文
       %th 画像
     -@rejected.reverse.each do |tw|
       %tr
-        %td= tw.id
         %td= tw.text
         %td= link_to "■",tw.image unless tw.image.empty?
       
