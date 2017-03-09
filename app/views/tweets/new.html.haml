@@ -27,10 +27,10 @@
   %p
     他の投稿者のツイートを
     = Settings[:post_review_ratio]
-    件レビューすると投稿回数が回復します。
+    件レビューすると残り投稿回数が増えます。
   %p
-    良識に従って判定しましょう。
-  = form_tag vote_tweets_path, method: 'get' do
+    良識に従いましょう。
+  = form_tag review_tweets_path, method: 'get' do
     = submit_tag "レビュー送信", class:"btn"
     %table.table
       %tr
@@ -40,7 +40,7 @@
         %th.bg-danger
         %th 本文
         %th 画像
-      -@drafts.reverse.each do |tw|
+      -@drafts.shuffle[0..3].each do |tw|
         %tr
           %td.bg-success= radio_button "vote", tw.id, "accept"
           %td.bg-success= tw.accept_value

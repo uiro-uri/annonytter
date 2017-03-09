@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 20170306074408) do
+ActiveRecord::Schema.define(version: 20170309020414) do
 
   create_table "sessions", force: :cascade, options: "ENGINE=InnoDB DEFAULT CHARSET=utf8" do |t|
     t.string   "session_id",               null: false
@@ -29,6 +29,12 @@ ActiveRecord::Schema.define(version: 20170306074408) do
     t.integer  "accept_value",                default: 0
     t.integer  "reject_value",                default: 0
     t.integer  "review_status", limit: 2,     default: 0, null: false
+  end
+
+  create_table "users", force: :cascade, options: "ENGINE=InnoDB DEFAULT CHARSET=utf8" do |t|
+    t.string   "new"
+    t.datetime "created_at", null: false
+    t.datetime "updated_at", null: false
   end
 
 end
