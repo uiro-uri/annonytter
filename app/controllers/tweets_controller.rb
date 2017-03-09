@@ -11,9 +11,7 @@ class TweetsController < ApplicationController
   end
   
   def new
-    session[:post_remains] ||= 0
-    session[:posted_tweet_ids]||=[]
-    session[:reviewed_tweet_ids]||=[]
+    initialize_session if session.empty?
     @drafts = Tweet.where(review_status: :draft).reject do |tw|
       (session[:posted_tweet_ids] + session[:reviewed_tweet_ids]).include?(tw.id)
     end
@@ -32,7 +30,7 @@ class TweetsController < ApplicationController
     end
   end
   
-  def vote
+  def review
     votes=params[:vote]||{}
     votes.each do |id,v|
       tweet=Tweet.find(id)
@@ -48,7 +46,7 @@ class TweetsController < ApplicationController
         tweet.review_status=:rejected if tweet.reject_value >= Settings[:reject_threshold]
         tweet.save
       end
-      session[:reviewed_tweet_ids] << id.to_i
+      session[:reviewed_tweet_ids] << tweet.id
     end
     session[:post_remains] += votes.length/Settings[:post_review_ratio]
     redirect_to :root, flash: {success: "レビュー完了"}
@@ -66,6 +64,12 @@ class TweetsController < ApplicationController
   end
 
   private
+  def initialize_session
+    session[:post_remains] ||= Settings[:initial_post_remains]
+    session[:posted_tweet_ids]||=[]
+    session[:reviewed_tweet_ids]||=[]
+  end
+  
   def create_params
     params.require(:tweet).permit(:text, :image)
   end
