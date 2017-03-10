@@ -73,10 +73,4 @@ class TweetsController < ApplicationController
   def create_params
     params.require(:tweet).permit(:text, :image)
   end
-  
-  def valid_url?(url)
-    open(url)
-  rescue
-    false
-  end
 end
