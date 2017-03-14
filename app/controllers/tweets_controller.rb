@@ -12,11 +12,13 @@ class TweetsController < ApplicationController
   
   def new
     initialize_session if session.empty?
-    @drafts = Tweet.where(review_status: :draft).reject do |tw|
+    @drafts= Tweet.where(review_status: :draft).reject do |tw|
       (session[:posted_tweet_ids] + session[:reviewed_tweet_ids]).include?(tw.id)
     end
     @rejected = Tweet.where(review_status: :rejected)
     @tweet = Tweet.new
+  rescue => e
+    logger.debug(e)
   end
 
   def create
@@ -60,9 +62,7 @@ class TweetsController < ApplicationController
     @client.update(status, option)
     tweet.destroy
   rescue => e
-    logger.debug("error")
     logger.debug(e)
-    false
   end
 
   private
