@@ -59,7 +59,9 @@ class TweetsController < ApplicationController
     option.update({media_ids: @client.upload(media)}) if media
     @client.update(status, option)
     tweet.destroy
-  rescue
+  rescue => e
+    logger.debug("error")
+    logger.debug(e)
     false
   end
 
@@ -72,5 +74,11 @@ class TweetsController < ApplicationController
   
   def create_params
     params.require(:tweet).permit(:text, :image)
+  end
+  
+  def valid_url?(url)
+    open(url)
+  rescue
+    false
   end
 end

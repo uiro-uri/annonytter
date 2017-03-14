@@ -51,4 +51,3 @@ production:
   <<: *default
   database: anonytter_production
   username: anonytter
-  password: <%= ENV['ANONYTTER_DATABASE_PASSWORD'] %>
