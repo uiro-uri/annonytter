@@ -43,9 +43,9 @@
       -@drafts.shuffle[0..3].each do |tw|
         %tr
           %td.bg-success= radio_button "vote", tw.id, "accept"
-          %td.bg-success= tw.accept_value
+          %td.bg-success= tw.accept_value.to_s + "/" + Settings[:accept_threshold].to_s
           %td.bg-danger= radio_button "vote", tw.id, "reject"
-          %td.bg-danger= tw.reject_value
+          %td.bg-danger= tw.reject_value.to_s + "/" + Settings[:reject_threshold].to_s
           %td= tw.text
           %td= link_to "■",tw.image unless tw.image.empty?
 

@@ -1,5 +1,5 @@
-accept_threshold: 3
-reject_threshold: 3
+accept_threshold: 2
+reject_threshold: 2
 initial_post_remains: 3
-post_review_ratio: 2
+post_review_ratio: 1
 twitter_url: "https://twitter.com/AnonytterApp"
